@@ -185,7 +185,7 @@ Meteor.startup(async () => {
 				return false;
 			}
 			const blockEditInMinutes = settings.Message_AllowEditing_BlockEditInMinutes as number;
-			const bypassBlockTimeLimit = hasPermission('bypass-time-limit-edit-and-delete');
+			const bypassBlockTimeLimit = hasPermission('bypass-time-limit-edit-and-delete', message.rid);
 
 			if (!bypassBlockTimeLimit && blockEditInMinutes) {
 				let msgTs;
@@ -266,10 +266,10 @@ Meteor.startup(async () => {
 		label: 'Reactions',
 		context: ['message', 'message-mobile', 'threads', 'videoconf', 'videoconf-threads'],
 		type: 'interaction',
-		action(this: unknown, _, { message: { reactions = {} } = messageArgs(this).msg, chat }) {
+		action(this: unknown, _, { message: { reactions = {} } = messageArgs(this).msg }) {
 			imperativeModal.open({
 				component: ReactionListModal,
-				props: { reactions, onOpenUserCard: chat?.userCard.openUserCard, onClose: imperativeModal.close },
+				props: { reactions, onClose: imperativeModal.close },
 			});
 		},
 		condition({ message: { reactions } }) {
